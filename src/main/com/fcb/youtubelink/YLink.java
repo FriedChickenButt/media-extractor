@@ -1,3 +1,8 @@
+/**
+ * getAllLinks - returns an ArrayList of YTResult
+ * 
+ */
+
 package com.fcb.youtubelink;
 
 import java.io.*;
@@ -8,34 +13,32 @@ import java.lang.*;
 import java.net.URL;
 import java.nio.charset.Charset;
 
-class YTResult {
-    int width, height;
-    String link, type, format;
+public class YLink {
 
-    YTResult(int width, int height, String type, String format, String link) {
-        this.width = width;
-        this.height = height;
-        this.type = type;
-        this.format = format;
-        this.link = link;
+    public ArrayList<YTResult> yLinkResults;
+    String yurl;
+
+    public YLink() {
+        yLinkResults = new ArrayList<>();
+        yurl = "";
     }
 
-    public ArrayList<String> getData() {
-        ArrayList<String> res = new ArrayList<>();
-        res.add(Integer.toString(width));
-        res.add(Integer.toString(height));
-        res.add(type);
-        res.add(format);
-        res.add(link);
-        return res;
+    public YLink(String yurl) {
+        this.yurl = yurl;
     }
-}
 
-class YLink {
-    public static void main(String[] args) {
+    // public static void main(String[] args) {
+    public ArrayList<YTResult> getAllLinks() {
+        // if(yLinkResults.size() != 0) {
+        //     return yLinkResults;
+        // }
+        ArrayList<YTResult> ytResults = null;
         try {
-            URL url = new URL(args[0]);
-            System.out.println(url);
+            URL url = new URL(yurl);
+            
+            // ArrayList to store the YTResult data (may need to run this a few more times)
+                ytResults = new ArrayList<>();
+            //
 
             // Copied from <https://stackoverflow.com/questions/1381617/simplest-way-to-correctly-load-html-from-web-page-into-a-string-in-java> upto line 26
             // Downloads webpage
@@ -73,10 +76,6 @@ class YLink {
             str1 = new String(b, Charset.forName("UTF-8"));
             //
 
-            // ArrayList to store the YTResult data (may need to run this a few more times)
-            ArrayList<YTResult> ytResults = new ArrayList<>();
-            //
-
             // Searching for links (Regex didn't work)
                 // Links do not work for some reason
                 // for(int i = str1.indexOf("&url="); i > 0; i = str1.indexOf("&url=", i + 1)) {
@@ -107,15 +106,23 @@ class YLink {
                 YTResult newResult = new YTResult(width, height, type, format, link);
                 ytResults.add(newResult);
             }
-            //
-
-            for(int i = 0; i < ytResults.size(); i++) {
-                System.out.println(ytResults.get(i).getData());
-            }
-
-
+            
         } catch(Exception e) {
             e.printStackTrace();
+        } finally {
+            yLinkResults = ytResults;
+            return ytResults;
         }
+    }
+
+    public ArrayList<YTResult> getVidLinks() {
+        getAllLinks();
+        ArrayList<YTResult> vidRes = new ArrayList<>();
+        for(int i = 0; i < yLinkResults.size(); i++) {
+            if(yLinkResults.get(i).type.equals("video")) {
+                vidRes.add(yLinkResults.get(i));
+            }
+        }
+        return vidRes;
     }
 }

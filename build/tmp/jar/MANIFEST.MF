@@ -1,3 +1,4 @@
 Manifest-Version: 1.0
-Main-Class: com.fcb.youtubelink.YLink
+Implementation-Title: YoutubeLink
+Implementation-Version: unspecified
 
